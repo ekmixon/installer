@@ -1,10 +1,16 @@
 def GenerateConfig(context):
 
-    backends = []
-    for zone in context.properties['zones']:
-        backends.append({
-            'group': '$(ref.' + context.properties['infra_id'] + '-master-' + zone + '-instance-group' + '.selfLink)'
-        })
+    backends = [
+        {
+            'group': '$(ref.'
+            + context.properties['infra_id']
+            + '-master-'
+            + zone
+            + '-instance-group'
+            + '.selfLink)'
+        }
+        for zone in context.properties['zones']
+    ]
 
     resources = [{
         'name': context.properties['infra_id'] + '-cluster-ip',
@@ -49,23 +55,23 @@ def GenerateConfig(context):
         }
     }]
 
-    for zone in context.properties['zones']:
-        resources.append({
-            'name': context.properties['infra_id'] + '-master-' + zone + '-instance-group',
+    resources.extend(
+        {
+            'name': context.properties['infra_id']
+            + '-master-'
+            + zone
+            + '-instance-group',
             'type': 'compute.v1.instanceGroup',
             'properties': {
                 'namedPorts': [
-                    {
-                        'name': 'ignition',
-                        'port': 22623
-                    }, {
-                        'name': 'https',
-                        'port': 6443
-                    }
+                    {'name': 'ignition', 'port': 22623},
+                    {'name': 'https', 'port': 6443},
                 ],
                 'network': context.properties['cluster_network'],
-                'zone': zone
-            }
-        })
+                'zone': zone,
+            },
+        }
+        for zone in context.properties['zones']
+    )
 
     return {'resources': resources}

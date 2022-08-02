@@ -36,7 +36,7 @@ def relink(path):
         parent_index = list(parent).index(image)
         parent.remove(image)
         attrib = dict(image.items())
-        attrib['{http://www.w3.org/1999/xlink}href'] = '#' + slug(uri)
+        attrib['{http://www.w3.org/1999/xlink}href'] = f'#{slug(uri)}'
         parent.insert(
             parent_index,
             xml.etree.ElementTree.Element('{http://www.w3.org/2000/svg}use', attrib=attrib))

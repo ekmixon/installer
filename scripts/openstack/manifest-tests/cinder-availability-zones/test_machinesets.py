@@ -38,9 +38,10 @@ class TestVolumeAZMachinesets(unittest.TestCase):
 
     def test_total_replica_number(self):
         """Assert that replicas spread across the MachineSets add up to the expected number."""
-        total_found = 0
-        for machineset in self.machinesets:
-            total_found += machineset["spec"]["replicas"]
+        total_found = sum(
+            machineset["spec"]["replicas"] for machineset in self.machinesets
+        )
+
         self.assertEqual(total_found, EXPECTED_MACHINES_NUMBER)
 
     def test_replica_distribution(self):
